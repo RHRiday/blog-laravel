@@ -47,9 +47,6 @@
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('post.create') }}">Add a Post</a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                                 </li>
                             @endif
@@ -71,7 +68,7 @@
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                                 document.getElementById('logout-form').submit();">
+                                                                         document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
@@ -85,20 +82,19 @@
                 </div>
             </div>
         </nav>
-        <div class="container">
-            <div class="nav-scroller py-1 mb-2 bg-dark rounded">
-                <nav class="nav d-flex justify-content-center">
-                    <a class="p-2 text-light" href="#">World</a>
-                    <a class="p-2 text-light" href="#">U.S.</a>
-                    <a class="p-2 text-light" href="#">Technology</a>
-                    <a class="p-2 text-light" href="#">Design</a>
-                    <a class="p-2 text-light" href="#">Culture</a>
-                    <a class="p-2 text-light" href="#">Health</a>
-                    <a class="p-2 text-light" href="#">Style</a>
-                    <a class="p-2 text-light" href="#">Travel</a>
-                </nav>
+        @isset($tags)
+            <div class="container">
+                <div class="nav-scroller py-1 mb-2 bg-dark rounded">
+                    <nav class="nav d-flex justify-content-center">
+
+                        @foreach ($tags as $tag)
+                            <a class="p-2 text-light" href="#">{{ $tag }}</a>
+                        @endforeach
+
+                    </nav>
+                </div>
             </div>
-        </div>
+        @endisset
         <main class="py-4 container">
             @yield('content')
             @include('partials.footer')

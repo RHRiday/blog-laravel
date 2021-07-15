@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['tags' => $tags])
 
 @section('content')
     @if (session()->has('success'))
@@ -19,7 +19,7 @@
                         <a href="{{ route('post.show', $post->id) }}" class="stretched-link">Continue reading</a>
                     </div>
                     <div class="col-auto d-none d-lg-block">
-                        <img class="bd-placeholder-img" width="200" height="250" src="">
+                        <img class="bd-placeholder-img" width="200" height="250" src="{{asset('images/post/'.$post->img_path)}}">
                     </div>
                 </div>
             </div>
