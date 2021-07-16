@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +13,7 @@ class PostController extends Controller
     public function __construct()
     {
         $this->middleware('auth', [
-            'except' => ['index', 'home', 'createSlug', 'postTags', 'show', 'tag']
+            'except' => ['index', 'home', 'createSlug', 'postTags', 'show', 'tag', 'user']
         ]);
     }
     /**
@@ -29,7 +30,7 @@ class PostController extends Controller
     public function postTags()
     {
         $c = [];
-        foreach(DB::table('posts')->select('tag')->get() as $data){
+        foreach (DB::table('posts')->select('tag')->get() as $data) {
             array_push($c, $data->tag);
         }
         return array_unique($c);
@@ -44,7 +45,7 @@ class PostController extends Controller
     {
         $data = DB::table('posts')->orderByDesc('created_at')->get();
         return view('welcome')->with([
-            'posts'=> $data,
+            'posts' => $data,
             'tags' => $this->postTags()
         ]);
     }
@@ -110,7 +111,8 @@ class PostController extends Controller
     public function show(Post $post)
     {
         return view('post.show')->with([
-            'data'=> $post,
+            'data' => $post,
+            'slugName' => $this->createSlug($post->user->name),
             'tags' => $this->postTags(),
             'prev' => Post::where('id', '<', $post->id)->max('id'),
             'next' => Post::where('id', '>', $post->id)->min('id')
@@ -127,9 +129,9 @@ class PostController extends Controller
     {
         if ($post->user_id !== Auth::id()) {
             abort(404);
-        }else{
+        } else {
             return view('post.create')->with([
-                'data'=> $post,
+                'data' => $post,
                 'tags' => $this->postTags()
             ]);
         }
@@ -145,7 +147,7 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         $request->validate([
-            'title' => 'required|string|max:120|unique:posts,title,'.$post->id,
+            'title' => 'required|string|max:120|unique:posts,title,' . $post->id,
             'description' => 'required|string',
             'tag' => 'required|string|max:25',
             'cover' => 'image|max:1024'
@@ -155,7 +157,7 @@ class PostController extends Controller
         if ($request->cover) {
             $img = uniqid(Auth::id() . time()) . '.' . $request->cover->extension();
             $request->cover->move(public_path('images/post'), $img);
-        }else{
+        } else {
             $img = $post->img_path;
         }
         $post->update([
@@ -167,7 +169,6 @@ class PostController extends Controller
         ]);
 
         return redirect(route('post.show', $post));
-
     }
 
     /**
@@ -192,10 +193,25 @@ class PostController extends Controller
     {
         $data = Post::where('tag', ucfirst($tag))->get();
         return view('welcome')->with([
-            'posts'=> $data,
+            'posts' => $data,
             'tags' => $this->postTags()
         ]);
     }
 
-
+    /**
+     * Filer Post according to user.
+     * and return index view with those Post
+     *
+     * @param  string  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function user($user)
+    {
+        $data = Post::where('user_id', User::where('name', str_replace('-', ' ', $user))->first()->id)->get();
+        return view('welcome')->with([
+            'posts' => $data,
+            'tags' => null,
+            'user' => User::where('name', str_replace('-', ' ', $user))->first()->name
+        ]);
+    }
 }

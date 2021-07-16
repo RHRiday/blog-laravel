@@ -5,8 +5,7 @@
         <div class="px-0">
             <h1 class="display-5 font-weight-bolder font-italic">{{ $data->title }}</h1>
             @if (isset(Auth::user()->id) && Auth::user()->id === $data->user_id)
-                <div class="modal fade" id="deletePost" tabindex="-1" aria-labelledby="deleteModalLabel"
-                    aria-hidden="true">
+                <div class="modal fade" id="deletePost" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -39,8 +38,8 @@
                 </div>
             @endif
             <div class="">
-                <p class="text-monospace"><i class="fas fa-user"></i> <span
-                        class="text-muted">{{ $data->user->name }}</span></p>
+                <p class="text-monospace"><i class="fas fa-user"></i> <span class="text-muted"><a
+                            href="/user/{{ $slugName }}">{{ $data->user->name }}</a></span></p>
                 <p class="text-monospace">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-calendar-event" viewBox="0 0 16 16">
