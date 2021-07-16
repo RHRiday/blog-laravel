@@ -15,11 +15,11 @@
                         <strong class="d-inline-block mb-2 text-primary">{{ $post->tag }}</strong>
                         <h3 class="mb-0">{{ $post->title }}</h3>
                         <div class="mb-1 text-muted">{{ date('F j', strtotime($post->created_at)) }}</div>
-                        <p class="card-text mb-auto">{{ $post->description }}</p>
+                        <p class="card-text mb-auto">{{ substr($post->description,0,190) }}</p>
                         <a href="{{ route('post.show', $post->id) }}" class="stretched-link">Continue reading</a>
                     </div>
-                    <div class="col-auto d-none d-lg-block">
-                        <img class="bd-placeholder-img" width="200" height="250" src="{{asset('images/post/'.$post->img_path)}}">
+                    <div class="col-auto d-none d-lg-block overflow-hidden" style="width: 200px; height:300px;">
+                        <img class="bd-placeholder-img" src="{{asset('images/post/'.$post->img_path)}}">
                     </div>
                 </div>
             </div>

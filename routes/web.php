@@ -15,6 +15,7 @@ use App\Http\Controllers\PostController;
 */
 
 Route::get('/', [PostController::class, 'home']);
+Route::get('/tag/{tag}', [PostController::class, 'tag']);
 Route::resource('post', PostController::class);
 
 Auth::routes();

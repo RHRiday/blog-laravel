@@ -12,7 +12,7 @@ class PostController extends Controller
     public function __construct()
     {
         $this->middleware('auth', [
-            'except' => ['index', 'home', 'createSlug', 'postTags', 'show']
+            'except' => ['index', 'home', 'createSlug', 'postTags', 'show', 'tag']
         ]);
     }
     /**
@@ -66,7 +66,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('post.create');
+        return view('post.create', [
+            'tags' => $this->postTags()
+        ]);
     }
 
     /**
@@ -88,10 +90,10 @@ class PostController extends Controller
         $request->cover->move(public_path('images/post'), $img);
 
         Post::create([
-            'title' => $request->input('title'),
+            'title' => ucfirst($request->input('title')),
             'slug' => $this->createSlug($request->title),
-            'description' => $request->input('description'),
-            'tag' => $request->input('tag'),
+            'description' => ucfirst($request->input('description')),
+            'tag' => ucfirst($request->input('tag')),
             'img_path' => $img,
             'user_id' => Auth::id()
         ]);
@@ -109,7 +111,9 @@ class PostController extends Controller
     {
         return view('post.show')->with([
             'data'=> $post,
-            'tags' => $this->postTags()
+            'tags' => $this->postTags(),
+            'prev' => Post::where('id', '<', $post->id)->max('id'),
+            'next' => Post::where('id', '>', $post->id)->min('id')
         ]);
     }
 
@@ -121,8 +125,14 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        // dd($post->img_path);
-        return view('post.create')->with('data', $post);
+        if ($post->user_id !== Auth::id()) {
+            abort(404);
+        }else{
+            return view('post.create')->with([
+                'data'=> $post,
+                'tags' => $this->postTags()
+            ]);
+        }
     }
 
     /**
@@ -149,10 +159,10 @@ class PostController extends Controller
             $img = $post->img_path;
         }
         $post->update([
-            'title' => $request->input('title'),
+            'title' => ucfirst($request->input('title')),
             'slug' => $this->createSlug($request->title),
-            'description' => $request->input('description'),
-            'tag' => $request->input('tag'),
+            'description' => ucfirst($request->input('description')),
+            'tag' => ucfirst($request->input('tag')),
             'img_path' => $img
         ]);
 
@@ -170,4 +180,22 @@ class PostController extends Controller
     {
         //
     }
+
+    /**
+     * Filer Post according to tag.
+     * and return index view with those Post
+     *
+     * @param  string  $tag
+     * @return \Illuminate\Http\Response
+     */
+    public function tag($tag)
+    {
+        $data = Post::where('tag', ucfirst($tag))->get();
+        return view('welcome')->with([
+            'posts'=> $data,
+            'tags' => $this->postTags()
+        ]);
+    }
+
+
 }

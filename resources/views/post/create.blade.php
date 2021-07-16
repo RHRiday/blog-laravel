@@ -35,11 +35,11 @@
                             <input class="form-control" list="tags" name="tag"
                                 value="{{ isset($data) ? $data->tag : old('tag') }}">
                             <datalist id="tags">
-                                <option value="Internet Explorer">
-                                <option value="Firefox">
-                                <option value="Chrome">
-                                <option value="Opera">
-                                <option value="Safari">
+                                @if (!empty($tags))
+                                    @foreach ($tags as $tag)
+                                        <option value="{{ $tag }}">
+                                    @endforeach
+                                @endif
                             </datalist>
                         </div>
                     </div>
