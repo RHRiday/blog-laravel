@@ -179,7 +179,10 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Post::where('id', $id);
+        $post->delete();
+
+        return redirect('/')->with('success', 'Your blog has been Deleted.');
     }
 
     /**

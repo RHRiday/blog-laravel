@@ -19,9 +19,9 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
-                                <form action="{{ route('post.destroy', $data->id) }}">
+                                <form action="{{ route('post.destroy', $data->id) }}" method="POST">
                                     @csrf
-                                    @method('delete')
+                                    @method('DELETE')
                                     <input type="submit" class="btn btn-sm btn-danger" value="Delete">
                                 </form>
                             </div>
