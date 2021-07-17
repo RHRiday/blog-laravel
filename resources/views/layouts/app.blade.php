@@ -13,12 +13,15 @@
     <!-- Scripts -->
     <script src="https://kit.fontawesome.com/43b42e8e8a.js" crossorigin="anonymous"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 
@@ -69,7 +72,7 @@
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
-                                                                             document.getElementById('logout-form').submit();">
+                                                                                 document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
@@ -83,7 +86,7 @@
                 </div>
             </div>
         </nav>
-        @if(!empty($tags))
+        @if (!empty($tags))
             <div class="container">
                 <div class="nav-scroller py-1 mb-2 bg-dark rounded">
                     <nav class="nav d-flex justify-content-center">
