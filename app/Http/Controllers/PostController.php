@@ -146,29 +146,33 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        $request->validate([
-            'title' => 'required|string|max:120|unique:posts,title,' . $post->id,
-            'description' => 'required|string',
-            'tag' => 'required|string|max:25',
-            'cover' => 'image|max:1024'
-        ]);
-
-
-        if ($request->cover) {
-            $img = uniqid(Auth::id() . time()) . '.' . $request->cover->extension();
-            $request->cover->move(public_path('images/post'), $img);
+        if ($post->user_id !== Auth::id()) {
+            abort(404);
         } else {
-            $img = $post->img_path;
-        }
-        $post->update([
-            'title' => ucfirst($request->input('title')),
-            'slug' => $this->createSlug($request->title),
-            'description' => ucfirst($request->input('description')),
-            'tag' => ucfirst($request->input('tag')),
-            'img_path' => $img
-        ]);
+            $request->validate([
+                'title' => 'required|string|max:120|unique:posts,title,' . $post->id,
+                'description' => 'required|string',
+                'tag' => 'required|string|max:25',
+                'cover' => 'image|max:1024'
+            ]);
 
-        return redirect(route('post.show', $post));
+
+            if ($request->cover) {
+                $img = uniqid(Auth::id() . time()) . '.' . $request->cover->extension();
+                $request->cover->move(public_path('images/post'), $img);
+            } else {
+                $img = $post->img_path;
+            }
+            $post->update([
+                'title' => ucfirst($request->input('title')),
+                'slug' => $this->createSlug($request->title),
+                'description' => ucfirst($request->input('description')),
+                'tag' => ucfirst($request->input('tag')),
+                'img_path' => $img
+            ]);
+
+            return redirect(route('post.show', $post));
+        }
     }
 
     /**
@@ -177,12 +181,15 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post)
     {
-        $post = Post::where('id', $id);
-        $post->delete();
+        if ($post->user_id !== Auth::id()) {
+            abort(404);
+        } else {
+            $post->delete();
 
-        return redirect('/')->with('success', 'Your blog has been Deleted.');
+            return redirect('/')->with('success', 'Your blog has been Deleted.');
+        }
     }
 
     /**
